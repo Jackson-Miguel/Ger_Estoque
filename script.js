@@ -16,6 +16,11 @@ const re_uva = document.getElementById("r_val_uva");
 const re_pera = document.getElementById("r_val_pera");
 const re_manga = document.getElementById("r_val_manga");
 
+const card_banana = document.getElementById("card_banana");
+const card_tomate = document.getElementById("card_tomate");
+const card_uva = document.getElementById("card_uva");
+const card_pera = document.getElementById("card_pera");
+const card_manga = document.getElementById("card_manga");
 
 window.onload = carregarProdutos;
 function carregarProdutos() {
@@ -166,6 +171,7 @@ reader.onload = function (e) {
     const imagemBase64 = e.target.result;
 
     const produto = {
+        idSeguro: nome.value.replace(/\s+/g, "_").toLowerCase() + "_" + Date.now(),
         nome: nome.value,
         qtde: Number(qtde.value),
         imagem: imagemBase64
@@ -179,25 +185,6 @@ reader.onload = function (e) {
 if (imagem.files.length > 0) {
     reader.readAsDataURL(imagem.files[0]);
 }
-    card.classList.add("card");
-    card.style.width = "18rem";
-
-    card.innerHTML = `
-        <img src="${urlArq}" class="card-img-top img-card">
-        <div class="card-body">
-            <h5 class="card-title">${nome.value}</h5>
-
-            <div class="d-flex">
-                <p class="me-2">Qtde:</p>
-                <p class="qtde">${qtde.value}</p>
-            </div>
-            <div id="p">
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_${idSeguro}">Adicionar</button>
-            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#r_${idSeguro}">Remover</button>
-            <button class="btn btn-secondary" id="exc_${idSeguro}">Excluir</button>
-            </div>
-        </div>
-    `;
 
     modal.innerHTML = `
         <div class="modal fade" id="modal_${idSeguro}" data-bs-backdrop="static">
@@ -274,7 +261,6 @@ qtde.value = "";
 imagem.value = ""
 }
 
-
 function criarCard(produto) {
 
     const card = document.createElement("div");
@@ -300,4 +286,17 @@ function criarCard(produto) {
     `;
 
     document.querySelector(".produtos").appendChild(card);
+    document.getElementById(`exc_${produto.idSeguro}`).addEventListener("click", function()  {
+    card.remove();
+    let lista = JSON.parse(localStorage.getItem("produtos")) || [];
+    lista = lista.filter(p => p.idSeguro !== produto.idSeguro);
+    localStorage.setItem("produtos", JSON.stringify(lista));
+    })
 }
+
+    document.getElementById("exc_banana").addEventListener("click", function()  {
+    card_banana.remove();
+    let lista = JSON.parse(localStorage.getItem("produtos")) || [];
+    lista = lista.filter(p => p.idSeguro !== produto.idSeguro);
+    localStorage.setItem("produtos", JSON.stringify(lista));
+    })
