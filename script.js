@@ -16,7 +16,7 @@ const re_uva = document.getElementById("r_val_uva");
 const re_pera = document.getElementById("r_val_pera");
 const re_manga = document.getElementById("r_val_manga");
 
-const card_banana = document.getElementById("card_banana");
+const card_banana = document.querySelector("#card_banana");
 const card_tomate = document.getElementById("card_tomate");
 const card_uva = document.getElementById("card_uva");
 const card_pera = document.getElementById("card_pera");
@@ -49,7 +49,8 @@ function salvarProduto(produto) {
 function add_ban(){
     let tot_ban = Number(banana.innerText) + Number(add_banana.value);
     banana.innerText = tot_ban;
-    localStorage.setItem("banana", tot_ban);
+    localStorage.setItem("produtos", JSON.stringify([
+    { id: "banana", nome: "banana", qtde: tot_ban }]));
     add_banana.value = ""
 }
 function add_tom(){
@@ -154,10 +155,6 @@ let add_produ = document.getElementById("add_produtos")
 
 function add_prod() {
 
-    const card = document.createElement("div");
-    const modal = document.createElement("div");
-    const re_modal = document.createElement("div");
-
     const nome = document.getElementById("nome");
     const imagem = document.getElementById("img");
     const qtde = document.getElementById("Qtde");
@@ -185,57 +182,7 @@ reader.onload = function (e) {
 if (imagem.files.length > 0) {
     reader.readAsDataURL(imagem.files[0]);
 }
-
-    modal.innerHTML = `
-        <div class="modal fade" id="modal_${idSeguro}" data-bs-backdrop="static">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">Adicionar quantidade</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <input type="number" class="form-control input-add">
-                    </div>
-
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                        <button class="btn btn-success btn-confirm" data-bs-dismiss="modal">
-                            Confirmar
-                        </button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    `;
-
-    re_modal.innerHTML = `
-    <div class="modal fade" id="r_${idSeguro}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title fs-5" id="staticBackdropLabel">Digite a quantidade produtos</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <input type="text" id="r_val_banana" class="form-control input-add">
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" >Remover</button>
-        </div>
-        </div>
-    </div>
-    </div>
-    `
-    document.querySelector(".produtos").appendChild(card);
-    document.body.appendChild(modal);
-    document.body.appendChild(re_modal);
-
-    const btnAdd = modal.querySelector(".btn-confirm");
+    const btnAdd = modal.querySelector("#btn-confirm");
     const inputAdd = modal.querySelector(".input-add");
     const qtdeEl = card.querySelector(".qtde");
 
@@ -264,6 +211,8 @@ imagem.value = ""
 function criarCard(produto) {
 
     const card = document.createElement("div");
+    const modal = document.createElement("div");
+    const re_modal = document.createElement("div");
 
     card.classList.add("card");
     card.style.width = "18rem";
@@ -285,7 +234,56 @@ function criarCard(produto) {
         </div>
     `;
 
+        modal.innerHTML = `
+        <div class="modal fade" id="modal_${produto.idSeguro}" data-bs-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Adicionar quantidade</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="number" class="form-control input-add">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        <button class="btn btn-success" data-bs-dismiss="modal" id="btn-confirm">
+                            Confirmar
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    `;
+
+    re_modal.innerHTML = `
+    <div class="modal fade" id="r_${produto.idSeguro}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">Digite a quantidade produtos</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <input type="text" id="r_val_banana" class="form-control input-add">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" >Remover</button>
+        </div>
+        </div>
+    </div>
+    </div>
+    `;
+
     document.querySelector(".produtos").appendChild(card);
+    document.querySelector(".produtos").append(modal);
+    document.querySelector(".produtos").append(re_modal);
+
     document.getElementById(`exc_${produto.idSeguro}`).addEventListener("click", function()  {
     card.remove();
     let lista = JSON.parse(localStorage.getItem("produtos")) || [];
@@ -294,9 +292,7 @@ function criarCard(produto) {
     })
 }
 
-    document.getElementById("exc_banana").addEventListener("click", function()  {
+    document.getElementById("exc_ban").addEventListener("click", function()  {
     card_banana.remove();
-    let lista = JSON.parse(localStorage.getItem("produtos")) || [];
-    lista = lista.filter(p => p.idSeguro !== produto.idSeguro);
-    localStorage.setItem("produtos", JSON.stringify(lista));
+    localStorage.setItem("banana");
     })
