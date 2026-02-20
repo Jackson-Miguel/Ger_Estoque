@@ -163,6 +163,9 @@ function add_prod() {
     const imagem = document.getElementById("img");
     const qtde = document.getElementById("Qtde");
 
+    const nom = nome.value;
+    const q = qtde.value;
+
     const idSeguro = nome.value.replace(/\s+/g, "_").toLowerCase() + "_" + Date.now();
 
     const reader = new FileReader();
@@ -173,8 +176,8 @@ reader.onload = function (e) {
 
     const produto = {
         idSeguro: nome.value.replace(/\s+/g, "_").toLowerCase() + "_" + Date.now(),
-        nome: nome.value,
-        qtde: Number(qtde.value),
+        nome: nom,
+        qtde: Number(q),
         imagem: imagemBase64
     };
 
@@ -186,6 +189,8 @@ if (imagem.files.length > 0) {
     reader.readAsDataURL(imagem.files[0]);
 }
 imagem.value = ""
+nome.value = "";
+qtde.value = "";
 }
 
 function criarCard(produto) {
