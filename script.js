@@ -39,10 +39,14 @@ function carregarProdutos() {
 
 function salvarProduto(produto) {
     let lista = JSON.parse(localStorage.getItem("produtos")) || [];
-
     lista.push(produto);
-
     localStorage.setItem("produtos", JSON.stringify(lista));
+}
+
+function addProdutos(produto){
+    let lista = JSON.parse(localStorage.getItem("produtos")) || [];
+    lista.push(produto);
+    produto.qtde = produto.qtde + `add${produto.idSeguro}`
 }
 
 //Adicionar itens
@@ -175,36 +179,12 @@ reader.onload = function (e) {
     };
 
     salvarProduto(produto);
-
-    criarCardNaTela(produto);
+    criarCard(produto);
 };
 
 if (imagem.files.length > 0) {
     reader.readAsDataURL(imagem.files[0]);
 }
-    const btnAdd = modal.querySelector("#btn-confirm");
-    const inputAdd = modal.querySelector(".input-add");
-    const qtdeEl = card.querySelector(".qtde");
-
-    btnAdd.addEventListener("click", function () {
-
-        let total = Number(qtdeEl.innerText) + Number(inputAdd.value || 0);
-
-        qtdeEl.innerText = total;
-
-        localStorage.setItem(idSeguro, total);
-
-        inputAdd.value = "";
-    });
-
-    salvarProduto({
-        nome: nome.value,
-        qtde: Number(qtde.value),
-        imagem: urlArq
-    });
-
-nome.value = "";
-qtde.value = "";
 imagem.value = ""
 }
 
@@ -245,14 +225,12 @@ function criarCard(produto) {
                     </div>
 
                     <div class="modal-body">
-                        <input type="number" class="form-control input-add">
+                        <input type="number" class="form-control" id="add_${produto.idSeguro}">
                     </div>
 
                     <div class="modal-footer">
                         <button class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                        <button class="btn btn-success" data-bs-dismiss="modal" id="btn-confirm">
-                            Confirmar
-                        </button>
+                        <button class="btn btn-success" data-bs-dismiss="modal" id="btn-confirm">Confirmar</button>
                     </div>
 
                 </div>
@@ -269,11 +247,11 @@ function criarCard(produto) {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <input type="text" id="r_val_banana" class="form-control input-add">
+            <input type="number" class="form-control" id="remo_${produto.idSeguro}">
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" >Remover</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="btn-re-confirm">Remover</button>
         </div>
         </div>
     </div>
@@ -289,10 +267,52 @@ function criarCard(produto) {
     let lista = JSON.parse(localStorage.getItem("produtos")) || [];
     lista = lista.filter(p => p.idSeguro !== produto.idSeguro);
     localStorage.setItem("produtos", JSON.stringify(lista));
-    })
-}
+    });
 
-    document.getElementById("exc_ban").addEventListener("click", function()  {
-    card_banana.remove();
-    localStorage.setItem("banana");
-    })
+    const add = modal.querySelector(`#add_${produto.idSeguro}`);
+    const btnConfirm = modal.querySelector("#btn-confirm");
+    const qtdeEl = card.querySelector(".qtde");
+
+    btnConfirm.addEventListener("click", function () {
+        let valor = Number(add.value || 0);
+        produto.qtde = Number(produto.qtde) + valor;
+        qtdeEl.innerText = produto.qtde;
+        let lista = JSON.parse(localStorage.getItem("produtos")) || [];
+
+        lista = lista.map(p => {
+            if (p.idSeguro === produto.idSeguro) {
+                p.qtde = produto.qtde;
+            }
+            return p;
+        });
+
+        localStorage.setItem("produtos", JSON.stringify(lista));
+
+        add.value = "";
+    });
+
+    const remover = re_modal.querySelector(`#remo_${produto.idSeguro}`);
+    const btnConfirmR = re_modal.querySelector("#btn-re-confirm");
+
+    btnConfirmR.addEventListener("click", function () {
+        let Rvalor = Number(remover.value || 0);
+        if(Number(Rvalor) > produto.qtde){
+            alert("Você não tem essa quantidade de produto")
+        }else{
+            produto.qtde = Number(produto.qtde) - Rvalor;
+        }
+        qtdeEl.innerText = produto.qtde;
+        let lista = JSON.parse(localStorage.getItem("produtos")) || [];
+
+        lista = lista.map(p => {
+            if (p.idSeguro === produto.idSeguro) {
+                p.qtde = produto.qtde;
+            }
+            return p;
+        });
+
+        localStorage.setItem("produtos", JSON.stringify(lista));
+
+        remover.value = "";
+    });
+}
