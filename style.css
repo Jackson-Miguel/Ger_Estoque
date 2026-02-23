@@ -2,11 +2,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family:cursive;
+    font-family: "Bebas Neue", sans-serif;
 }
 #title, #subtitle{
     text-align: center;
-    font-family:cursive;
     color: #260101;
     margin-top: 30px;
     font-size: 50px;
@@ -17,12 +16,14 @@
     flex-wrap: wrap;
     background-color: #671869;
 }
+#filtro{
+    width: 25px;
+}
 #btns{
     justify-content: space-between;
 }
 .img-card {
   height: 240px;
-  border: 2px solid #671869;
   object-fit: cover;
 }
 .card {
@@ -31,7 +32,9 @@
 }
 
 .prod{
+    width: 330px;
     display: flex;
+    justify-content: space-around;
     margin-left: 10px;
     margin-bottom: 10px;
 }

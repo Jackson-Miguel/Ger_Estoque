@@ -19,7 +19,6 @@ function addProdutos(produto){
     produto.qtde = produto.qtde + `add${produto.idSeguro}`
 }
 
-
 let add_produ = document.getElementById("add_produtos")
 
 function add_prod() {
@@ -65,9 +64,11 @@ function criarCard(produto) {
     const re_modal = document.createElement("div");
 
     card.classList.add("card");
+    card.setAttribute("data-quant", produto.qtde);
     card.style.width = "18rem";
 
     card.innerHTML = `
+
         <img src="${produto.imagem}" class="card-img-top img-card">
         <div class="card-body">
             <h5 class="card-title">${produto.nome}</h5>
@@ -184,5 +185,50 @@ function criarCard(produto) {
         localStorage.setItem("produtos", JSON.stringify(lista));
 
         remover.value = "";
+    });
+    const lista = document.querySelector(".produtos")
+    const OrdAZ = document.getElementById("AZ");
+    const OrdZA = document.getElementById("ZA");
+    const OrdMenor = document.getElementById("Menor");
+    const OrdMaior = document.getElementById("Maior");
+
+    OrdAZ.addEventListener("click", function(){
+        const itens = Array.from(lista.children); 
+        itens.sort((a, b) => {
+            return a.innerText.localeCompare(b.innerText);
+        })
+        lista.innerHTML = "";
+
+        itens.forEach(item => lista.appendChild(item));
+    });
+
+    OrdZA.addEventListener("click", function(){
+        const itens = Array.from(lista.children); 
+        itens.sort((a, b) => {
+            return b.innerText.localeCompare(a.innerText);
+        })
+        lista.innerHTML = "";
+
+        itens.forEach(item => lista.appendChild(item));
+    });
+
+    OrdMenor.addEventListener("click", function(){
+        const itens = Array.from(lista.querySelectorAll("[data-quant]"));
+        itens.sort((a, b) => {
+            return Number(a.dataset.quant) - Number(b.dataset.quant);
+        })
+        lista.innerHTML = "";
+
+        itens.forEach(item => lista.appendChild(item));
+    });
+
+    OrdMaior.addEventListener("click", function(){
+        const itens = Array.from(lista.querySelectorAll("[data-quant]")); 
+        itens.sort((a, b) => {
+            return Number(b.dataset.quant) - Number(a.dataset.quant);
+        })
+        lista.innerHTML = "";
+
+        itens.forEach(item => lista.appendChild(item));
     });
 }
