@@ -14,10 +14,18 @@
     display: flex;
     justify-content: start;
     flex-wrap: wrap;
-    background-color: #671869;
+    background-color: #F2F2F2;
+}
+#btnAdd{
+    background-color: #017282;
+    color: white;
 }
 #filtro{
     width: 25px;
+}
+#btnFilt{
+    background-color: #009B8D;
+    color: #fff;
 }
 #btns{
     justify-content: space-between;
